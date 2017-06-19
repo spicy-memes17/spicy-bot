@@ -77,6 +77,9 @@ def getPageImages(data):
 
 #looks on number many pages on the subreddit for titles and saves them to ./descriptions in a new textfile
 def trainDescriptions(number):
+    if not os.path.exists(DESCRIPTIONS):
+        os.makedirs(DESCRIPTIONS)
+
     file = open(DESCRIPTIONS + "/" + str(len(os.listdir(DESCRIPTIONS))) + ".txt", "w+")
     page = "https://www.reddit.com/r/funny/new/"
     count = 0
@@ -95,6 +98,9 @@ def trainDescriptions(number):
 
 #looks on number many pages on the subreddit for images and saves them to ./images
 def trainImages(number):
+    if not os.path.exists(IMAGES):
+        os.makedirs(IMAGES)
+
     page = "https://www.reddit.com/r/images/new/"
     count = 0
 
