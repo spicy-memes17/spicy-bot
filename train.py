@@ -1,4 +1,4 @@
-import sys, requests, os, random, threading, shutil
+import sys, requests, os, random, threading, shutil, unicodedata
 
 #used to appear as a desktopbrowser
 header = {
@@ -18,7 +18,7 @@ def getData(URL):
     except:
         data = requests.get("https://www.reddit.com/r/funny/new/", headers=header)
     
-    data = str(data.text)
+    data = unicodedata.normalize('NFKD', data.text).encode('utf-8','ignore')
     return data
 
 def getNextPage(data):
