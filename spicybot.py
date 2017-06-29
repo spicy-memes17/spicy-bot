@@ -20,7 +20,7 @@ class botThread (threading.Thread):
 SIGNUP = "http://localhost:8000/spicy_memes/signUp/"
 LOGIN = "http://localhost:8000/spicy_memes/loginPage/"
 UPLOAD = "http://localhost:8000/spicy_memes/uploadFile"
-VOTE = "http://localhost:8000/spicy_memes/post/"
+VOTE = "http://localhost:8000/spicy_memes/like-post/"
 POST = "http://localhost:8000/spicy_memes/post/"
 
 #important files/directories
@@ -63,14 +63,14 @@ def upload(title, description, file, client):
 #a function that tries to upvote the post with the specific id 
 def upvote(client, id):
     csrftoken = client.cookies['csrftoken']
-    uploaddata = {'csrfmiddlewaretoken' : csrftoken}
-    r = client.post(VOTE+str(id)+"/1/likePost/", data = uploaddata)
+    uploaddata = {'post_id' : str(id), 'likes':"1"}
+    r = client.get(VOTE+"?post_id="+str(id)+"&likes=1", data = uploaddata)
 
 #a function that tries to downvote the post with the specific id 
 def downvote(client, id):
     csrftoken = client.cookies['csrftoken']
-    uploaddata = {'csrfmiddlewaretoken' : csrftoken}
-    r = client.post(VOTE+str(id)+"/0/likePost/", data = uploaddata)
+    uploaddata = {'post_id' : str(id), 'likes' : "0"}
+    r = client.get(VOTE+"?post_id="+str(id)+"&likes=0", data = uploaddata)
 
 def comment(client, id):
     csrftoken = client.cookies['csrftoken']
