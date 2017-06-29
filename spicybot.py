@@ -20,6 +20,8 @@ class botThread (threading.Thread):
 SIGNUP = "http://localhost:8000/spicy_memes/signUp/"
 LOGIN = "http://localhost:8000/spicy_memes/loginPage/"
 UPLOAD = "http://localhost:8000/spicy_memes/uploadFile"
+VOTE = "http://localhost:8000/spicy_memes/post/"
+POST = "http://localhost:8000/spicy_memes/post/"
 
 #important files/directories
 IMAGES = "./images"
@@ -58,6 +60,25 @@ def upload(title, description, file, client):
     uploaddata = {'csrfmiddlewaretoken' : csrftoken, 'title' : title, 'description' : description}
     r = client.post(UPLOAD, data = uploaddata,  files = {'image_field' : file})
 
+#a function that tries to upvote the post with the specific id 
+def upvote(client, id):
+    csrftoken = client.cookies['csrftoken']
+    uploaddata = {'csrfmiddlewaretoken' : csrftoken}
+    r = client.post(VOTE+str(id)+"/1/likePost/", data = uploaddata)
+
+#a function that tries to downvote the post with the specific id 
+def downvote(client, id):
+    csrftoken = client.cookies['csrftoken']
+    uploaddata = {'csrfmiddlewaretoken' : csrftoken}
+    r = client.post(VOTE+str(id)+"/0/likePost/", data = uploaddata)
+
+def comment(client, id):
+    csrftoken = client.cookies['csrftoken']
+    comment = loadRandomDescription()
+    uploaddata = {'csrfmiddlewaretoken' : csrftoken, 'content' : comment}
+    r = client.post(POST+str(id)+"/comment/", data=uploaddata)
+
+
 #login for a existing user, returns a new session for this user
 def login(username, password):
     client = requests.session() #create a new session
@@ -81,6 +102,29 @@ def uploadBot(username, password, posts):
     for i in range(posts):
         upload (loadRandomTitle(), loadRandomDescription(), loadRandomImage(), client)
 
+#a bot that tries to upvote a specific number of posts between lowerID and upperID
+def upvoteBot(username, password, lowerID, upperID, number):
+    client = login(username, password)
+    for i in range(number):
+        id = random.choice(range(lowerID, upperID+1))
+        upvote(client, id)
+
+
+#a bot that tries to downvote a specific number of posts between lowerID and upperID
+def downvoteBot(username, password, lowerID, upperID, number):
+    client = login(username, password)
+    for i in range(number):
+        id = random.choice(range(lowerID, upperID+1))
+        downvote(client, id)
+
+#a bot that tries to comment a specific number of posts between lowerId and upperID
+def commentBot(username, password, lowerID, upperID, number):
+    client = login(username, password)
+    for i in range(number):
+        id = random.choice(range(lowerID, upperID+1))
+        comment(client, id)
+
+
 
 if sys.argv[1] is None:
     print("Usage:")
@@ -97,3 +141,15 @@ else:
     elif sys.argv[1] == 'botUpload':
         print("Starting " + str(sys.argv[2]) +  " bots to upload " + str(sys.argv[3]) + " posts each.")
         run("uploadBot", int(sys.argv[2]), lambda username, password: uploadBot(username, password, int(sys.argv[3])))
+
+    elif sys.argv[1] == 'botUpvote':
+        print("Starting" + str(sys.argv[2]) + " bots to upvote " + str(sys.argv[5]) + " posts between the IDs " + str(sys.argv[3]) + " and " + str(sys.argv[4]))
+        run("upvoteBot", int(sys.argv[2]), lambda username, password: upvoteBot(username, password, int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5])))
+
+    elif sys.argv[1] == 'botDownvote':
+        print("Starting" + str(sys.argv[2]) + " bots to downvote " + str(sys.argv[5]) + " posts between the IDs " + str(sys.argv[3]) + " and " + str(sys.argv[4]))
+        run("downvoteBot", int(sys.argv[2]), lambda username, password: downvoteBot(username, password, int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5])))
+
+    elif sys.argv[1] == 'botComment':
+        print("Starting" + str(sys.argv[2]) + " bots to comment " + str(sys.argv[5]) + " posts between the IDs " + str(sys.argv[3]) + " and " + str(sys.argv[4]))
+        run("commentBot", int(sys.argv[2]), lambda username, password: commentBot(username, password, int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5])))
