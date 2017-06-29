@@ -12,5 +12,16 @@ To download texts type: **python spicybot.py trainDescriptions number**
 _Number_ describes the number of pages of a subreddit that are downloaded (usually 25 items per page)  
 
 ## Bot usage
-The tool will support diffrent kinds of bots in the future. For now there is only a bot which can upload memes. To do so make sure that the directories "./descriptions" and "./images" are not empty and type: **python spicybot.py botUpload number1 number2**  
+Please make sure that the directories "./descriptions" and "./images" are not empty.
+
+Upload: **python spicybot.py  botUpload  number1  number2**  
 _Number1_ describes the number of diffrent bots that will be created, _Number2_ describes the number of memes that each bot will upload.
+
+Upvote: **python spicybot.py  botUpvote  number1  number2  number3  number4**  
+_Number1_ describes the number of diffrent bots that will be created, _Number2_ describes a lower and _Number3_ a upper bound for the IDs of posts that will be handled, each bot tries to upvote _Number4_ posts between the lower and upper bound.
+
+Downvote: **python spicybot.py  botDownvote  number1  number2  number3  number4**  
+_Number1_ describes the number of diffrent bots that will be created, _Number2_ describes a lower and _Number3_ a upper bound for the IDs of posts that will be handled, each bot tries to downvote _Number4_ posts between the lower and upper bound.
+
+Comment: **python spicybot.py  botComment  number1  number2  number3  number4**  
+_Number1_ describes the number of diffrent bots that will be created, _Number2_ describes a lower and _Number3_ a upper bound for the IDs of posts that will be handled, each bot tries to comment _Number4_ posts between the lower and upper bound.
